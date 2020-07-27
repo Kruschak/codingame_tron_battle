@@ -15,6 +15,7 @@ class Item:
     def __init__(self, owner):
         self._owner = owner
         self._dist = [math.inf] * 4
+        self._closest_owner = 9
 
     def set_owner(self, owner):
         self._owner = owner
@@ -29,6 +30,22 @@ class Item:
     # set the distance of a player
     def set_distance(self, player, distance):
         self._dist[player] = distance
+
+    def get_closest_owner(self):
+        return self._closest_owner
+
+    def set_closest_owner(self):
+        # Case 1: all inf
+        # Case 2: 2 with same dist
+        # Case 3: 1 min
+        closest_player = 9
+        if min(self._dist) != math.inf:
+            min_distance = min(self._dist)
+            if self._dist.count(min_distance) != 1:
+                closest_player = 8
+            else:
+                closest_player = self._dist.index(min_distance)
+        self._closest_owner = closest_player
 
 
 class Grid:
@@ -51,9 +68,17 @@ class Grid:
             return Item(-1)
 
     def print_grid_owner(self):
+        print('Owners of the grid', file=sys.stderr, flush=True)
         for y in range(len(self.data[0])):
             for x in range(len(self.data)):
                 print(self.get_item(x, y).get_owner(), file=sys.stderr, flush=True, end=' ')
+            print('', file=sys.stderr, flush=True)
+
+    def print_closest_owner(self):
+        print('Print closest owner: ', file=sys.stderr, flush=True)
+        for y in range(len(self.data[0])):
+            for x in range(len(self.data)):
+                print(self.get_item(x, y).get_closest_owner(), file=sys.stderr, flush=True, end=' ')
             print('', file=sys.stderr, flush=True)
 
     def print_grid_dist(self, player):
@@ -92,7 +117,7 @@ class Grid:
             # set's the distance of the starting point
             # self.get_item(self.x_cur[player], self.y_cur[player]).set_distance(player, 0)
             self.data[self.x_cur[player]][self.y_cur[player]].set_distance(player, 0)
-            test_dist = self.data[self.x_cur[player]][self.y_cur[player]].get_distance(player)
+            # test_dist = self.data[self.x_cur[player]][self.y_cur[player]].get_distance(player)
             # print('Distance loop initial pos: ' + str(test_dist), file=sys.stderr)
             knot_queue = Queue()
             knot_queue.put([self.x_cur[player], self.y_cur[player]])
@@ -133,9 +158,10 @@ class Grid:
         print('Calculations to for distance made: ' + str(calc_counter), file=sys.stderr)
 
     # calculates which field is probably got by which player
-    # def calc_prop_owner(self):
-    #     for x in range(GRID_SIZE_X):
-    # print('X: ' + str(x), file=sys.stderr)
+    def calc_closest_owner(self):
+        for x in range(GRID_SIZE_X):
+            for y in range(GRID_SIZE_Y):
+                grid.data[x][y].set_closest_owner()
 
 
 # Function to find target direction
@@ -191,11 +217,14 @@ while True:
 
     # prints the whole grid for visualisation
     # grid.print_grid_owner()
+
+    # calculates the shortest path
     grid.calc_shortest_path_for_grid()
-    grid.print_grid_dist(your_number)
+    # grid.print_grid_dist(your_number)
     # grid.print_grid_dist(1)
 
-    # grid.calc_prop_owner()
+    grid.calc_closest_owner()
+    grid.print_closest_owner()
 
     # A single line with UP, DOWN, LEFT or RIGHT
     print(get_next(x_user, y_user))
