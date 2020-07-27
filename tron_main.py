@@ -3,6 +3,7 @@ import sys
 
 # constants
 import time
+from copy import deepcopy
 from queue import Queue
 
 GRID_SIZE_X = 30
@@ -15,7 +16,7 @@ class Item:
     def __init__(self, owner):
         self._owner = owner
         self._dist = [math.inf] * 4
-        self._closest_owner = 9
+        self._closest_owner = -1
 
     def set_owner(self, owner):
         self._owner = owner
@@ -53,6 +54,8 @@ class Grid:
     # TODO: needs to be set every round
     x_cur = [-1] * 4
     y_cur = [-1] * 4
+
+    sum_closest_owner = [-1] * 4
 
     def __init__(self):
         # self.data = [[Item(9)] * GRID_SIZE_Y for i in range(GRID_SIZE_X)]
@@ -161,7 +164,19 @@ class Grid:
     def calc_closest_owner(self):
         for x in range(GRID_SIZE_X):
             for y in range(GRID_SIZE_Y):
-                grid.data[x][y].set_closest_owner()
+                self.data[x][y].set_closest_owner()
+
+    # sum's the fields up of each player
+    def calc_sum_closest_owner(self):
+        for player in range(number_players):
+            sum_closest_owner = 0
+            for x in range(GRID_SIZE_X):
+                for y in range(GRID_SIZE_Y):
+                    # print('closest_owner: ' + str(self.data[x][y].get_closest_owner()) + ' player: ' + str(player), file=sys.stderr)
+                    if self.data[x][y].get_closest_owner() == player:
+                        sum_closest_owner += 1
+            print('sum: ' + str(sum_closest_owner), file=sys.stderr)
+            self.sum_closest_owner[player] = sum_closest_owner
 
 
 # Function to find target direction
@@ -218,13 +233,38 @@ while True:
     # prints the whole grid for visualisation
     # grid.print_grid_owner()
 
-    # calculates the shortest path
-    grid.calc_shortest_path_for_grid()
+    # calculates the shortest path but useless cause its just the current standing
+    # grid.calc_shortest_path_for_grid()
     # grid.print_grid_dist(your_number)
     # grid.print_grid_dist(1)
 
-    grid.calc_closest_owner()
-    grid.print_closest_owner()
+    if grid.get_item(x_user - 1, y_user).get_owner() == 9:
+        gridL = deepcopy(grid)
+        gridL.data[x_user - 1][y_user].set_owner(your_number)
+        # set's the current position you to represent step ahead
+        gridL.x_cur[your_number] = x_user - 1
+        gridL.y_cur[your_number] = y_user
+
+        gridL.calc_shortest_path_for_grid()
+        gridL.print_grid_dist(your_number)
+        gridL.calc_closest_owner()
+
+        gridL.print_closest_owner()
+
+        gridL.calc_sum_closest_owner()
+
+        print('Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr)
+
+    elif grid.get_item(x_user + 1, y_user).get_owner() == 9:
+        gridR = deepcopy(grid)
+        gridR.data[x_user + 1][y_user].set_owner(your_number)
+    # elif grid.get_item(x, y - 1).get_owner() == 9:
+    #     return 'UP'
+    # else:
+    #     return 'DOWN'
+
+    # grid.calc_closest_owner()
+    # grid.print_closest_owner()
 
     # A single line with UP, DOWN, LEFT or RIGHT
     print(get_next(x_user, y_user))
@@ -239,6 +279,7 @@ while True:
     print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr)
 
 # TODO:
+
 # remove dead people from grid (needed as soon as more than two player
 #
 # calc dist for each pos for each player if reachable else -1
