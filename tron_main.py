@@ -77,14 +77,12 @@ class Grid:
             player = player - 1
             # set's the distance of the starting point
             self.get_item(self.x_cur[player], self.y_cur[player]).set_distance(player, 0)
-            knot_queue = []
-            knot_queue.append([self.x_cur[player], self.y_cur[player]])
+            knot_queue = Queue()
+            knot_queue.put([self.x_cur[player], self.y_cur[player]])
 
-            test_count = 0
-            while len(knot_queue) > 0 and test_count <= 100:
-                test_count += 1
-                print('Size but not sure: ' + str(len(knot_queue)), file=sys.stderr, flush=True)
-                x_item, y_item = knot_queue.pop()
+            while not knot_queue.empty():
+                print('Size but not sure: ' + str(knot_queue.qsize()), file=sys.stderr, flush=True)
+                x_item, y_item = knot_queue.get()
                 # no for loop cause every time only 4 possible ways
                 # left x-1
                 x_item_new = x_item - 1
@@ -94,7 +92,7 @@ class Grid:
                         # set's the new distance
                         dist = self.get_item(x_item, y_item).get_distance(player)
                         self.get_item(x_item, y_item).set_distance(player, dist + 1)
-                        knot_queue.append([x_item_new, y_item_new])
+                        knot_queue.put([x_item_new, y_item_new])
 
                 # right x+1
                 x_item_new = x_item + 1
@@ -104,7 +102,7 @@ class Grid:
                         # set's the new distance
                         dist = self.get_item(x_item, y_item).get_distance(player)
                         self.get_item(x_item, y_item).set_distance(player, dist + 1)
-                        knot_queue.append([x_item_new, y_item_new])
+                        knot_queue.put([x_item_new, y_item_new])
 
                 # up y-1
                 x_item_new = x_item
@@ -114,7 +112,7 @@ class Grid:
                         # set's the new distance
                         dist = self.get_item(x_item, y_item).get_distance(player)
                         self.get_item(x_item, y_item).set_distance(player, dist + 1)
-                        knot_queue.append([x_item_new, y_item_new])
+                        knot_queue.put([x_item_new, y_item_new])
 
                 # down y+1
                 x_item_new = x_item
@@ -124,7 +122,7 @@ class Grid:
                         # set's the new distance
                         dist = self.get_item(x_item, y_item).get_distance(player)
                         self.get_item(x_item, y_item).set_distance(player, dist + 1)
-                        knot_queue.append([x_item_new, y_item_new])
+                        knot_queue.put([x_item_new, y_item_new])
 
 
 # Function to find target direction
