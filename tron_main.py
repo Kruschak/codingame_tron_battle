@@ -2,6 +2,7 @@ import math
 import sys
 
 # constants
+import time
 from queue import Queue
 
 GRID_SIZE_X = 30
@@ -72,10 +73,22 @@ class Grid:
 
     # calculates the distance for each player to each grid pos
     def calc_shortest_path_for_grid(self):
-        # for player in range(1):
-        for player in range(number_players + 1):
-            # fake to start with 0
-            player = player - 1
+        def calc_helper():
+            if self.get_item(x_item_new, y_item_new).get_owner() == 9:
+                if self.get_item(x_item_new, y_item_new).get_distance(player) == math.inf:
+                    # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new), file=sys.stderr,
+                    #       flush=True)
+                    # set's the new distance
+                    dist = self.get_item(x_item, y_item).get_distance(player)
+                    # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist), file=sys.stderr)
+                    self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
+                    knot_queue.put([x_item_new, y_item_new])
+                    return True
+            return False
+        # counts the number of calculates distances
+        calc_counter = 0
+        for player in range(number_players):
+            # print('Player: ' + str(player), file=sys.stderr)
             # set's the distance of the starting point
             # self.get_item(self.x_cur[player], self.y_cur[player]).set_distance(player, 0)
             self.data[self.x_cur[player]][self.y_cur[player]].set_distance(player, 0)
@@ -85,7 +98,8 @@ class Grid:
             knot_queue.put([self.x_cur[player], self.y_cur[player]])
 
             debug_hold = 0
-            while not knot_queue.empty() and debug_hold < 20000:
+
+            while not knot_queue.empty() and debug_hold < 200000:
                 debug_hold += 1
                 # print('Calc Counter: ' + str(debug_hold), file=sys.stderr)
                 # print('Size but not sure: ' + str(knot_queue.qsize()), file=sys.stderr, flush=True)
@@ -96,59 +110,37 @@ class Grid:
                 # left x-1
                 x_item_new = x_item - 1
                 y_item_new = y_item
-                if self.get_item(x_item_new, y_item_new).get_owner() == 9:
-                    if self.get_item(x_item_new, y_item_new).get_distance(player) == math.inf:
-                        # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new), file=sys.stderr,
-                        #       flush=True)
-                        # set's the new distance
-                        dist = self.get_item(x_item, y_item).get_distance(player)
-                        # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist), file=sys.stderr)
-                        self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
-                        knot_queue.put([x_item_new, y_item_new])
-
+                if calc_helper():
+                    calc_counter += 1
                 # right x+1
                 x_item_new = x_item + 1
                 y_item_new = y_item
-                if self.get_item(x_item_new, y_item_new).get_owner() == 9:
-                    if self.get_item(x_item_new, y_item_new).get_distance(player) == math.inf:
-                        # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new), file=sys.stderr,
-                        #       flush=True)
-                        # set's the new distance
-                        dist = self.get_item(x_item, y_item).get_distance(player)
-                        # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist), file=sys.stderr)
-                        self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
-                        knot_queue.put([x_item_new, y_item_new])
+                if calc_helper():
+                    calc_counter += 1
 
                 # up y-1
                 x_item_new = x_item
                 y_item_new = y_item - 1
-                if self.get_item(x_item_new, y_item_new).get_owner() == 9:
-                    if self.get_item(x_item_new, y_item_new).get_distance(player) == math.inf:
-                        # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new), file=sys.stderr,
-                        #       flush=True)
-                        # set's the new distance
-                        dist = self.get_item(x_item, y_item).get_distance(player)
-                        # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist), file=sys.stderr)
-                        self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
-                        knot_queue.put([x_item_new, y_item_new])
+                if calc_helper():
+                    calc_counter += 1
 
                 # down y+1
                 x_item_new = x_item
                 y_item_new = y_item + 1
-                if self.get_item(x_item_new, y_item_new).get_owner() == 9:
-                    if self.get_item(x_item_new, y_item_new).get_distance(player) == math.inf:
-                        # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new), file=sys.stderr,
-                        #       flush=True)
-                        # set's the new distance
-                        dist = self.get_item(x_item, y_item).get_distance(player)
-                        # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist), file=sys.stderr)
-                        self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
-                        knot_queue.put([x_item_new, y_item_new])
+                if calc_helper():
+                    calc_counter += 1
+
+        print('Calculations to for distance made: ' + str(calc_counter), file=sys.stderr)
+
+    # calculates which field is probably got by which player
+    # def calc_prop_owner(self):
+    #     for x in range(GRID_SIZE_X):
+    # print('X: ' + str(x), file=sys.stderr)
 
 
 # Function to find target direction
 def get_next(x, y):
-    print(str(x) + ' ' + str(y) + ' ' + str(grid.get_item(x, y, debug=False).get_owner()), file=sys.stderr, flush=True)
+    # print(str(x) + ' ' + str(y) + ' ' + str(grid.get_item(x, y, debug=False).get_owner()), file=sys.stderr, flush=True)
     if grid.get_item(x - 1, y).get_owner() == 9:
         return 'LEFT'
     elif grid.get_item(x + 1, y).get_owner() == 9:
@@ -166,6 +158,9 @@ y_user = 0
 
 # game loop
 while True:
+    # for timing measurements
+    start_time = time.time()
+
     # number_players: total number of players (2 to 4).
     # p: your player number (0 to 3).
     number_players, your_number = [int(i) for i in input().split()]
@@ -197,9 +192,10 @@ while True:
     # prints the whole grid for visualisation
     # grid.print_grid_owner()
     grid.calc_shortest_path_for_grid()
-    # grid.print_grid_dist(your_number)
-    grid.print_grid_dist(1)
-    # grid.print_grid_dist(your_number)
+    grid.print_grid_dist(your_number)
+    # grid.print_grid_dist(1)
+
+    # grid.calc_prop_owner()
 
     # A single line with UP, DOWN, LEFT or RIGHT
     print(get_next(x_user, y_user))
@@ -209,6 +205,9 @@ while True:
 
     # set first to false
     first = False
+
+    # should be the last to measure loop time
+    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr)
 
 # TODO:
 # remove dead people from grid (needed as soon as more than two player
