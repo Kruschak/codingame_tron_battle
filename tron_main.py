@@ -55,7 +55,7 @@ class Grid:
     x_cur = [-1] * 4
     y_cur = [-1] * 4
 
-    sum_closest_owner = [-1] * 4
+    sum_closest_owner = -1
 
     def __init__(self):
         # self.data = [[Item(9)] * GRID_SIZE_Y for i in range(GRID_SIZE_X)]
@@ -113,6 +113,7 @@ class Grid:
                     knot_queue.put([x_item_new, y_item_new])
                     return True
             return False
+
         # counts the number of calculates distances
         calc_counter = 0
         for player in range(number_players):
@@ -168,30 +169,37 @@ class Grid:
 
     # sum's the fields up of each player
     def calc_sum_closest_owner(self):
-        for player in range(number_players):
-            sum_closest_owner = 0
-            for x in range(GRID_SIZE_X):
-                for y in range(GRID_SIZE_Y):
-                    # print('closest_owner: ' + str(self.data[x][y].get_closest_owner()) + ' player: ' + str(player),
-                    # file=sys.stderr)
-                    if self.data[x][y].get_closest_owner() == player:
-                        sum_closest_owner += 1
-            print('sum: ' + str(sum_closest_owner), file=sys.stderr)
-            self.sum_closest_owner[player] = sum_closest_owner
+        # calculate only for mme
+        # for player in range(number_players):
+        player = your_number
+        sum_closest_owner = 0
+        for x in range(GRID_SIZE_X):
+            for y in range(GRID_SIZE_Y):
+                # print('closest_owner: ' + str(self.data[x][y].get_closest_owner()) + ' player: ' + str(player),
+                # file=sys.stderr)
+                if self.data[x][y].get_closest_owner() == player:
+                    sum_closest_owner += 1
+        # print('sum: ' + str(sum_closest_owner), file=sys.stderr)
+        self.sum_closest_owner = sum_closest_owner
 
 
 # Function to find target direction
 def get_next(x, y):
     # print(str(x) + ' ' + str(y) + ' ' + str(grid.get_item(x, y, debug=False).get_owner()), file=sys.stderr,
     # flush=True)
-    if grid.get_item(x - 1, y).get_owner() == 9:
+
+    max_own = max([gridL.sum_closest_owner, gridR.sum_closest_owner, gridU.sum_closest_owner, gridD.sum_closest_owner])
+    if max_own == gridL.sum_closest_owner:
         return 'LEFT'
-    elif grid.get_item(x + 1, y).get_owner() == 9:
+    elif max_own == gridR.sum_closest_owner:
         return 'RIGHT'
-    elif grid.get_item(x, y - 1).get_owner() == 9:
+    elif max_own == gridU.sum_closest_owner:
         return 'UP'
-    else:
+    elif max_own == gridD.sum_closest_owner:
         return 'DOWN'
+    else:
+        print('WARNING: used default after finding no max', file=sys.stderr)
+        return 'LEFT'
 
 
 grid = Grid()
@@ -241,38 +249,70 @@ while True:
     # grid.print_grid_dist(1)
 
     if grid.get_item(x_user - 1, y_user).get_owner() == 9:
+        # copies the base item because it get's manipulated to simulate the next step
         gridL = deepcopy(grid)
+        # set's the next step as owner to represent it as walked onto
         gridL.data[x_user - 1][y_user].set_owner(your_number)
-        # set's the current position you to represent step ahead
+        # set's the current position of you to represent step ahead
         gridL.x_cur[your_number] = x_user - 1
         gridL.y_cur[your_number] = y_user
-
         gridL.calc_shortest_path_for_grid()
-        gridL.print_grid_dist(your_number)
+        # gridL.print_grid_dist(your_number)
         gridL.calc_closest_owner()
-
-        gridL.print_closest_owner()
-
+        # gridL.print_closest_owner()
         gridL.calc_sum_closest_owner()
+        print('L Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr)
 
-        print('Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr)
-
-    elif grid.get_item(x_user + 1, y_user).get_owner() == 9:
+    if grid.get_item(x_user + 1, y_user).get_owner() == 9:
+        # copies the base item because it get's manipulated to simulate the next step
         gridR = deepcopy(grid)
+        # set's the next step as owner to represent it as walked onto
         gridR.data[x_user + 1][y_user].set_owner(your_number)
-    # elif grid.get_item(x, y - 1).get_owner() == 9:
-    #     return 'UP'
-    # else:
-    #     return 'DOWN'
+        # set's the current position of you to represent step ahead
+        gridR.x_cur[your_number] = x_user + 1
+        gridR.y_cur[your_number] = y_user
+        gridR.calc_shortest_path_for_grid()
+        # gridL.print_grid_dist(your_number)
+        gridR.calc_closest_owner()
+        # gridL.print_closest_owner()
+        gridR.calc_sum_closest_owner()
+        print('R Sum closest owner: ' + str(gridR.sum_closest_owner), file=sys.stderr)
 
-    # grid.calc_closest_owner()
-    # grid.print_closest_owner()
+    if grid.get_item(x_user, y_user - 1).get_owner() == 9:
+        # copies the base item because it get's manipulated to simulate the next step
+        gridU = deepcopy(grid)
+        # set's the next step as owner to represent it as walked onto
+        gridU.data[x_user][y_user - 1].set_owner(your_number)
+        # set's the current position of you to represent step ahead
+        gridU.x_cur[your_number] = x_user
+        gridU.y_cur[your_number] = y_user - 1
+        gridU.calc_shortest_path_for_grid()
+        # gridL.print_grid_dist(your_number)
+        gridU.calc_closest_owner()
+        # gridL.print_closest_owner()
+        gridU.calc_sum_closest_owner()
+        print('U Sum closest owner: ' + str(gridU.sum_closest_owner), file=sys.stderr)
+
+    if grid.get_item(x_user, y_user + 1).get_owner() == 9:
+        # copies the base item because it get's manipulated to simulate the next step
+        gridD = deepcopy(grid)
+        # set's the next step as owner to represent it as walked onto
+        gridD.data[x_user][y_user + 1].set_owner(your_number)
+        # set's the current position of you to represent step ahead
+        gridD.x_cur[your_number] = x_user
+        gridD.y_cur[your_number] = y_user + 1
+        gridD.calc_shortest_path_for_grid()
+        # gridD.print_grid_dist(your_number)
+        gridD.calc_closest_owner()
+        # gridD.print_closest_owner()
+        gridD.calc_sum_closest_owner()
+        print('D Sum closest owner: ' + str(gridD.sum_closest_owner), file=sys.stderr)
 
     # A single line with UP, DOWN, LEFT or RIGHT
     print(get_next(x_user, y_user))
 
-    # reset's to infinite for next calc
-    grid.reset_grid_distance()
+    # reset's to infinite for next calc not needed because it's just the copy base
+    # grid.reset_grid_distance()
 
     # set first to false
     first = False
@@ -282,10 +322,8 @@ while True:
 
 # TODO:
 
-# remove dead people from grid (needed as soon as more than two player
-#
-# calc dist for each pos for each player if reachable else -1
-# do this for each step up down left right
-# set pos owner to the person which its shortest
-# sum them up so you know how many steps you can make before game over
-# take the best of the four for you max(yours - thems)
+# remove dead people from grid (needed as soon as more than two player perhaps calculate the biggest coherent area
+# instead of pos_owner to calculate splittings the turn after into calculation calc dist for each pos for each player
+# if reachable else -1 do this for each step up down left right set pos owner to the person which its shortest sum
+# them up so you know how many steps you can make before game over take the best of the four for you max(yours -
+# them's)
