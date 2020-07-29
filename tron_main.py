@@ -184,7 +184,7 @@ class Grid:
 
 
 # Function to find target direction
-def get_next(x, y):
+def get_next():
     # print(str(x) + ' ' + str(y) + ' ' + str(grid.get_item(x, y, debug=False).get_owner()), file=sys.stderr,
     # flush=True)
 
@@ -315,7 +315,7 @@ while True:
     first = False
 
     # A single line with UP, DOWN, LEFT or RIGHT
-    print(get_next(x_user, y_user))
+    print(get_next())
 
     # reset's to infinite for next calc not needed because it's just the copy base
     # grid.reset_grid_distance()
