@@ -108,7 +108,7 @@ class Grid:
                     # file=sys.stderr, flush=True) set's the new distance
                     dist = self.get_item(x_item, y_item).get_distance(player)
                     # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist),
-                    # file=sys.stderr)
+                    # file=sys.stderr, flush=True)
                     self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
                     knot_queue.put([x_item_new, y_item_new])
                     return True
@@ -117,12 +117,12 @@ class Grid:
         # counts the number of calculates distances
         calc_counter = 0
         for player in range(number_players):
-            # print('Player: ' + str(player), file=sys.stderr)
+            # print('Player: ' + str(player), file=sys.stderr, flush=True)
             # set's the distance of the starting point
             # self.get_item(self.x_cur[player], self.y_cur[player]).set_distance(player, 0)
             self.data[self.x_cur[player]][self.y_cur[player]].set_distance(player, 0)
             # test_dist = self.data[self.x_cur[player]][self.y_cur[player]].get_distance(player)
-            # print('Distance loop initial pos: ' + str(test_dist), file=sys.stderr)
+            # print('Distance loop initial pos: ' + str(test_dist), file=sys.stderr, flush=True)
             knot_queue = Queue()
             knot_queue.put([self.x_cur[player], self.y_cur[player]])
 
@@ -130,7 +130,7 @@ class Grid:
 
             while not knot_queue.empty() and debug_hold < 200000:
                 debug_hold += 1
-                # print('Calc Counter: ' + str(debug_hold), file=sys.stderr)
+                # print('Calc Counter: ' + str(debug_hold), file=sys.stderr, flush=True)
                 # print('Size but not sure: ' + str(knot_queue.qsize()), file=sys.stderr, flush=True)
 
                 x_item, y_item = knot_queue.get()
@@ -159,7 +159,7 @@ class Grid:
                 if calc_helper():
                     calc_counter += 1
 
-        print('Calculations to for distance made: ' + str(calc_counter), file=sys.stderr)
+        print('Calculations to for distance made: ' + str(calc_counter), file=sys.stderr, flush=True)
 
     # calculates which field is probably got by which player
     def calc_closest_owner(self):
@@ -176,10 +176,10 @@ class Grid:
         for x in range(GRID_SIZE_X):
             for y in range(GRID_SIZE_Y):
                 # print('closest_owner: ' + str(self.data[x][y].get_closest_owner()) + ' player: ' + str(player),
-                # file=sys.stderr)
+                # file=sys.stderr, flush=True)
                 if self.data[x][y].get_closest_owner() == player:
                     sum_closest_owner += 1
-        # print('sum: ' + str(sum_closest_owner), file=sys.stderr)
+        # print('sum: ' + str(sum_closest_owner), file=sys.stderr, flush=True)
         self.sum_closest_owner = sum_closest_owner
 
 
@@ -198,7 +198,7 @@ def get_next():
     elif max_own == gridD.sum_closest_owner:
         return 'DOWN'
     else:
-        print('WARNING: used default after finding no max', file=sys.stderr)
+        print('WARNING: used default after finding no max', file=sys.stderr, flush=True)
         return 'LEFT'
 
 
@@ -212,7 +212,7 @@ while True:
     # number_players: total number of players (2 to 4).
     # p: your player number (0 to 3).
     number_players, your_number = [int(i) for i in input().split()]
-    print('start while', file=sys.stderr)
+    print('start while', file=sys.stderr, flush=True)
     # for timing measurements
     # start_time = time.time()
     for number_player in range(number_players):
@@ -250,15 +250,15 @@ while True:
 
     # every round to delete old data
     # copies the base item because it get's manipulated to simulate the next step
-    print('253 before grid copies', file=sys.stderr)
+    print('253 before grid copies', file=sys.stderr, flush=True)
     gridL = deepcopy(grid)
-    print('L copied', file=sys.stderr)
+    print('L copied', file=sys.stderr, flush=True)
     gridR = deepcopy(grid)
-    print('R copied', file=sys.stderr)
+    print('R copied', file=sys.stderr, flush=True)
     gridU = deepcopy(grid)
-    print('U copied', file=sys.stderr)
+    print('U copied', file=sys.stderr, flush=True)
     gridD = deepcopy(grid)
-    print('D after grid copies', file=sys.stderr)
+    print('D after grid copies', file=sys.stderr, flush=True)
     if grid.get_item(x_user - 1, y_user).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
         gridL.data[x_user - 1][y_user].set_owner(your_number)
@@ -270,7 +270,7 @@ while True:
         gridL.calc_closest_owner()
         # gridL.print_closest_owner()
         gridL.calc_sum_closest_owner()
-        print('L Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr)
+        print('L Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr, flush=True)
 
     if grid.get_item(x_user + 1, y_user).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
@@ -283,7 +283,7 @@ while True:
         gridR.calc_closest_owner()
         # gridL.print_closest_owner()
         gridR.calc_sum_closest_owner()
-        print('R Sum closest owner: ' + str(gridR.sum_closest_owner), file=sys.stderr)
+        print('R Sum closest owner: ' + str(gridR.sum_closest_owner), file=sys.stderr, flush=True)
 
     if grid.get_item(x_user, y_user - 1).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
@@ -296,7 +296,7 @@ while True:
         gridU.calc_closest_owner()
         # gridL.print_closest_owner()
         gridU.calc_sum_closest_owner()
-        print('U Sum closest owner: ' + str(gridU.sum_closest_owner), file=sys.stderr)
+        print('U Sum closest owner: ' + str(gridU.sum_closest_owner), file=sys.stderr, flush=True)
 
     if grid.get_item(x_user, y_user + 1).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
@@ -309,7 +309,7 @@ while True:
         gridD.calc_closest_owner()
         # gridD.print_closest_owner()
         gridD.calc_sum_closest_owner()
-        print('D Sum closest owner: ' + str(gridD.sum_closest_owner), file=sys.stderr)
+        print('D Sum closest owner: ' + str(gridD.sum_closest_owner), file=sys.stderr, flush=True)
 
     # set first to false
     first = False
@@ -323,7 +323,7 @@ while True:
 
 
     # should be the last to measure loop time
-    # print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr)
+    # print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
 
 # TODO:
 
