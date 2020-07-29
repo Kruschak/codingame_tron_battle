@@ -2,7 +2,7 @@ import math
 import sys
 
 # constants
-import time
+# import time
 from copy import deepcopy
 from queue import Queue
 
@@ -209,12 +209,12 @@ y_user = 0
 
 # game loop
 while True:
-    # for timing measurements
-    start_time = time.time()
-
     # number_players: total number of players (2 to 4).
     # p: your player number (0 to 3).
     number_players, your_number = [int(i) for i in input().split()]
+    print('start while', file=sys.stderr)
+    # for timing measurements
+    # start_time = time.time()
     for number_player in range(number_players):
         # x0: starting X coordinate of lightcycle (or -1)
         # y0: starting Y coordinate of lightcycle (or -1)
@@ -248,9 +248,18 @@ while True:
     # grid.print_grid_dist(your_number)
     # grid.print_grid_dist(1)
 
+    # every round to delete old data
+    # copies the base item because it get's manipulated to simulate the next step
+    print('253 before grid copies', file=sys.stderr)
+    gridL = deepcopy(grid)
+    print('L copied', file=sys.stderr)
+    gridR = deepcopy(grid)
+    print('R copied', file=sys.stderr)
+    gridU = deepcopy(grid)
+    print('U copied', file=sys.stderr)
+    gridD = deepcopy(grid)
+    print('D after grid copies', file=sys.stderr)
     if grid.get_item(x_user - 1, y_user).get_owner() == 9:
-        # copies the base item because it get's manipulated to simulate the next step
-        gridL = deepcopy(grid)
         # set's the next step as owner to represent it as walked onto
         gridL.data[x_user - 1][y_user].set_owner(your_number)
         # set's the current position of you to represent step ahead
@@ -264,8 +273,6 @@ while True:
         print('L Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr)
 
     if grid.get_item(x_user + 1, y_user).get_owner() == 9:
-        # copies the base item because it get's manipulated to simulate the next step
-        gridR = deepcopy(grid)
         # set's the next step as owner to represent it as walked onto
         gridR.data[x_user + 1][y_user].set_owner(your_number)
         # set's the current position of you to represent step ahead
@@ -279,8 +286,6 @@ while True:
         print('R Sum closest owner: ' + str(gridR.sum_closest_owner), file=sys.stderr)
 
     if grid.get_item(x_user, y_user - 1).get_owner() == 9:
-        # copies the base item because it get's manipulated to simulate the next step
-        gridU = deepcopy(grid)
         # set's the next step as owner to represent it as walked onto
         gridU.data[x_user][y_user - 1].set_owner(your_number)
         # set's the current position of you to represent step ahead
@@ -294,8 +299,6 @@ while True:
         print('U Sum closest owner: ' + str(gridU.sum_closest_owner), file=sys.stderr)
 
     if grid.get_item(x_user, y_user + 1).get_owner() == 9:
-        # copies the base item because it get's manipulated to simulate the next step
-        gridD = deepcopy(grid)
         # set's the next step as owner to represent it as walked onto
         gridD.data[x_user][y_user + 1].set_owner(your_number)
         # set's the current position of you to represent step ahead
@@ -308,17 +311,19 @@ while True:
         gridD.calc_sum_closest_owner()
         print('D Sum closest owner: ' + str(gridD.sum_closest_owner), file=sys.stderr)
 
+    # set first to false
+    first = False
+
     # A single line with UP, DOWN, LEFT or RIGHT
     print(get_next(x_user, y_user))
 
     # reset's to infinite for next calc not needed because it's just the copy base
     # grid.reset_grid_distance()
 
-    # set first to false
-    first = False
+
 
     # should be the last to measure loop time
-    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr)
+    # print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr)
 
 # TODO:
 
