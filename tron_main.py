@@ -104,11 +104,11 @@ class Grid:
         def calc_helper():
             if self.get_item(x_item_new, y_item_new).get_owner() == 9:
                 if self.get_item(x_item_new, y_item_new).get_distance(player) == math.inf:
-                    # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new), file=sys.stderr,
-                    #       flush=True)
-                    # set's the new distance
+                    # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new),
+                    # file=sys.stderr, flush=True) set's the new distance
                     dist = self.get_item(x_item, y_item).get_distance(player)
-                    # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist), file=sys.stderr)
+                    # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist),
+                    # file=sys.stderr)
                     self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
                     knot_queue.put([x_item_new, y_item_new])
                     return True
@@ -172,7 +172,8 @@ class Grid:
             sum_closest_owner = 0
             for x in range(GRID_SIZE_X):
                 for y in range(GRID_SIZE_Y):
-                    # print('closest_owner: ' + str(self.data[x][y].get_closest_owner()) + ' player: ' + str(player), file=sys.stderr)
+                    # print('closest_owner: ' + str(self.data[x][y].get_closest_owner()) + ' player: ' + str(player),
+                    # file=sys.stderr)
                     if self.data[x][y].get_closest_owner() == player:
                         sum_closest_owner += 1
             print('sum: ' + str(sum_closest_owner), file=sys.stderr)
@@ -181,7 +182,8 @@ class Grid:
 
 # Function to find target direction
 def get_next(x, y):
-    # print(str(x) + ' ' + str(y) + ' ' + str(grid.get_item(x, y, debug=False).get_owner()), file=sys.stderr, flush=True)
+    # print(str(x) + ' ' + str(y) + ' ' + str(grid.get_item(x, y, debug=False).get_owner()), file=sys.stderr,
+    # flush=True)
     if grid.get_item(x - 1, y).get_owner() == 9:
         return 'LEFT'
     elif grid.get_item(x + 1, y).get_owner() == 9:
