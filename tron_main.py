@@ -107,7 +107,7 @@ class Grid:
                     # print('Item added: x_item_new: ' + str(x_item_new) + ' y_item_new: ' + str(y_item_new),
                     # file=sys.stderr, flush=True) set's the new distance
                     dist = self.get_item(x_item, y_item).get_distance(player)
-                    # print('Distance calced from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist),
+                    # print('Distance calculated from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist),
                     # file=sys.stderr, flush=True)
                     self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
                     knot_queue.put([x_item_new, y_item_new])
