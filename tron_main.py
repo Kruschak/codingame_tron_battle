@@ -249,21 +249,16 @@ while True:
     # grid.print_grid_dist(1)
 
     # every round to delete old data
-    # copies the base item because it get's manipulated to simulate the next step
-    print('253 before grid copies', file=sys.stderr, flush=True)
-    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+    # copies the base item because it is manipulated to simulate the next step
+    print('253 before grid copies - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
     gridL = deepcopy(grid)
-    print('L copied', file=sys.stderr, flush=True)
-    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+    print('L copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
     gridR = deepcopy(grid)
-    print('R copied', file=sys.stderr, flush=True)
-    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+    print('R copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
     gridU = deepcopy(grid)
-    print('U copied', file=sys.stderr, flush=True)
-    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+    print('U copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
     gridD = deepcopy(grid)
-    print('D after grid copies', file=sys.stderr, flush=True)
-    print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+    print('D after grid copies - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
     if grid.get_item(x_user - 1, y_user).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
         gridL.data[x_user - 1][y_user].set_owner(your_number)
@@ -271,12 +266,16 @@ while True:
         gridL.x_cur[your_number] = x_user - 1
         gridL.y_cur[your_number] = y_user
         gridL.calc_shortest_path_for_grid()
+        print('L after shortest path ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridL.print_grid_dist(your_number)
         gridL.calc_closest_owner()
+        print('L after calc closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridL.print_closest_owner()
         gridL.calc_sum_closest_owner()
-        print('L Sum closest owner: ' + str(gridL.sum_closest_owner), file=sys.stderr, flush=True)
-        print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+        print('L after sum closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
 
     if grid.get_item(x_user + 1, y_user).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
@@ -285,12 +284,16 @@ while True:
         gridR.x_cur[your_number] = x_user + 1
         gridR.y_cur[your_number] = y_user
         gridR.calc_shortest_path_for_grid()
+        print('R after shortest path ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridL.print_grid_dist(your_number)
         gridR.calc_closest_owner()
+        print('R after calc closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridL.print_closest_owner()
         gridR.calc_sum_closest_owner()
-        print('R Sum closest owner: ' + str(gridR.sum_closest_owner), file=sys.stderr, flush=True)
-        print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+        print('R after sum closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
 
     if grid.get_item(x_user, y_user - 1).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
@@ -299,12 +302,16 @@ while True:
         gridU.x_cur[your_number] = x_user
         gridU.y_cur[your_number] = y_user - 1
         gridU.calc_shortest_path_for_grid()
+        print('U after shortest path ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridL.print_grid_dist(your_number)
         gridU.calc_closest_owner()
+        print('U after calc closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridL.print_closest_owner()
         gridU.calc_sum_closest_owner()
-        print('U Sum closest owner: ' + str(gridU.sum_closest_owner), file=sys.stderr, flush=True)
-        print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+        print('U after sum closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
 
     if grid.get_item(x_user, y_user + 1).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
@@ -313,12 +320,16 @@ while True:
         gridD.x_cur[your_number] = x_user
         gridD.y_cur[your_number] = y_user + 1
         gridD.calc_shortest_path_for_grid()
+        print('D after shortest path ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridD.print_grid_dist(your_number)
         gridD.calc_closest_owner()
+        print('D after calc closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
         # gridD.print_closest_owner()
         gridD.calc_sum_closest_owner()
-        print('D Sum closest owner: ' + str(gridD.sum_closest_owner), file=sys.stderr, flush=True)
-        print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+        print('D after sum closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
+              file=sys.stderr, flush=True)
 
     # set first to false
     first = False
@@ -329,10 +340,8 @@ while True:
     # reset's to infinite for next calc not needed because it's just the copy base
     # grid.reset_grid_distance()
 
-
-
     # should be the last to measure loop time
-    # print("--- %s seconds ---" % (time.time() - start_time), file=sys.stderr, flush=True)
+    # print("--- %s s ---" % (time.time() - start_time), file=sys.stderr, flush=True)
 
 # TODO:
 
