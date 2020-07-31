@@ -209,6 +209,19 @@ y_user = 0
 
 # game loop
 while True:
+    # every round to delete old data
+    # copies the base item because it is manipulated to simulate the next step
+    start_time = time.time()
+    print('253 before grid copies - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
+    gridL = deepcopy(grid)
+    print('L copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
+    gridR = deepcopy(grid)
+    print('R copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
+    gridU = deepcopy(grid)
+    print('U copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
+    gridD = deepcopy(grid)
+    print('D after grid copies - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
+
     # number_players: total number of players (2 to 4).
     # p: your player number (0 to 3).
     number_players, your_number = [int(i) for i in input().split()]
@@ -222,11 +235,19 @@ while True:
         # y1: starting Y coordinate of lightcycle (can be the same as Y0 if you play before this player)
         x0, y0, x1, y1 = [int(j) for j in input().split()]
         grid.data[x1][y1].set_owner(number_player)
+        gridL.data[x1][y1].set_owner(number_player)
+        gridR.data[x1][y1].set_owner(number_player)
+        gridU.data[x1][y1].set_owner(number_player)
+        gridD.data[x1][y1].set_owner(number_player)
 
         # adds the players starting position on the first round
         # is needed because if i go second the starting pos is missing in the grid of the first going players
         if first:
             grid.data[x0][y0].set_owner(number_player)
+            gridL.data[x0][y0].set_owner(number_player)
+            gridR.data[x0][y0].set_owner(number_player)
+            gridU.data[x0][y0].set_owner(number_player)
+            gridD.data[x0][y0].set_owner(number_player)
 
         # my current position
         if number_player == your_number:
@@ -236,6 +257,18 @@ while True:
         # set's the current position of a player
         grid.x_cur[number_player] = x1
         grid.y_cur[number_player] = y1
+
+        gridL.x_cur[number_player] = x1
+        gridL.y_cur[number_player] = y1
+
+        gridR.x_cur[number_player] = x1
+        gridR.y_cur[number_player] = y1
+
+        gridU.x_cur[number_player] = x1
+        gridU.y_cur[number_player] = y1
+
+        gridD.x_cur[number_player] = x1
+        gridD.y_cur[number_player] = y1
 
     # Write an action using print
     # To debug: print("Debug messages...", file=sys.stderr, flush=True)
@@ -248,17 +281,6 @@ while True:
     # grid.print_grid_dist(your_number)
     # grid.print_grid_dist(1)
 
-    # every round to delete old data
-    # copies the base item because it is manipulated to simulate the next step
-    print('253 before grid copies - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
-    gridL = deepcopy(grid)
-    print('L copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
-    gridR = deepcopy(grid)
-    print('R copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
-    gridU = deepcopy(grid)
-    print('U copied - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
-    gridD = deepcopy(grid)
-    print('D after grid copies - %s s -' % (time.time() - start_time), file=sys.stderr, flush=True)
     if grid.get_item(x_user - 1, y_user).get_owner() == 9:
         # set's the next step as owner to represent it as walked onto
         gridL.data[x_user - 1][y_user].set_owner(your_number)
