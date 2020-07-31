@@ -15,7 +15,7 @@ GRID_SIZE_Y = 20
 class Item:
     def __init__(self, owner):
         self._owner = owner
-        self._dist = [math.inf] * 4
+        self.dist = [math.inf] * 4
         self._closest_owner = -1
 
     def set_owner(self, owner):
@@ -26,11 +26,11 @@ class Item:
 
     # gets the distance of a player
     def get_distance(self, player):
-        return self._dist[player]
+        return self.dist[player]
 
     # set the distance of a player
     def set_distance(self, player, distance):
-        self._dist[player] = distance
+        self.dist[player] = distance
 
     def get_closest_owner(self):
         return self._closest_owner
@@ -40,18 +40,17 @@ class Item:
         # Case 2: 2 with same dist
         # Case 3: 1 min
         closest_player = 9
-        if min(self._dist) != math.inf:
-            min_distance = min(self._dist)
-            if self._dist.count(min_distance) != 1:
+        if min(self.dist) != math.inf:
+            min_distance = min(self.dist)
+            if self.dist.count(min_distance) != 1:
                 closest_player = 8
             else:
-                closest_player = self._dist.index(min_distance)
+                closest_player = self.dist.index(min_distance)
         self._closest_owner = closest_player
 
 
 class Grid:
     # contains the current positions of the players
-    # TODO: needs to be set every round
     x_cur = [-1] * 4
     y_cur = [-1] * 4
 
@@ -109,8 +108,9 @@ class Grid:
                     dist = self.get_item(x_item, y_item).get_distance(player)
                     # print('Distance calculated from x: ' + str(x_item) + ' y: ' + str(y_item) + ' dist: ' + str(dist),
                     # file=sys.stderr, flush=True)
+                    if (dist + 1) <= min(self.data[x_item_new][y_item_new].dist):
+                        knot_queue.put([x_item_new, y_item_new])
                     self.data[x_item_new][y_item_new].set_distance(player, dist + 1)
-                    knot_queue.put([x_item_new, y_item_new])
                     return True
             return False
 
@@ -294,7 +294,7 @@ while True:
         gridL.calc_closest_owner()
         print('L after calc closest owner: - %s s -' % (time.time() - start_time),
               file=sys.stderr, flush=True)
-        # gridL.print_closest_owner()
+        gridL.print_closest_owner()
         gridL.calc_sum_closest_owner()
         print('L after sum closest owner: ' + str(gridL.sum_closest_owner) + ' - %s s -' % (time.time() - start_time),
               file=sys.stderr, flush=True)
