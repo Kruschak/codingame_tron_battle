@@ -192,7 +192,7 @@ class Grid:
         sum2[your_number] = -1
         biggest_op = max(sum2)
 
-        self.value = self.sum_closest_owner[your_number] * 2 - biggest_op + 10000
+        self.value = self.sum_closest_owner[your_number]*2 - biggest_op + 10000
         print('Value: ' + str(self.value), file=sys.stderr, flush=True)
 
 
@@ -393,8 +393,6 @@ while True:
 
 # TODO:
 
-# remove dead people from grid (needed as soon as more than two player perhaps calculate the biggest coherent area
-# instead of pos_owner to calculate splittings the turn after into calculation calc dist for each pos for each player
-# if reachable else -1 do this for each step up down left right set pos owner to the person which its shortest sum
-# them up so you know how many steps you can make before game over take the best of the four for you max(yours -
-# them's)
+# remove dead people from grid
+# use flood fill to calc possible owner sum (stop splitts to count together)
+# calc 2 modes: im already bigger then they easy playdown else need to get better
