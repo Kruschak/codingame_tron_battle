@@ -189,11 +189,11 @@ class Grid:
         #     if player != your_number:
         #         sum_opponent += self.sum_closest_owner[player]
         sum2 = self.sum_closest_owner
-        sum2[your_number] = -1
+        # sum2[your_number] = -1
         biggest_op = max(sum2)
 
-        self.value = self.sum_closest_owner[your_number]*2 - biggest_op + 10000
-        print('Value: ' + str(self.value), file=sys.stderr, flush=True)
+        self.value = self.sum_closest_owner[your_number]
+        print('Value: ' + str(self.value) + ' ' + str(your_number) + ' ' + str(sum2), file=sys.stderr, flush=True)
 
 
 # Function to find target direction
@@ -202,7 +202,7 @@ def get_next():
     # flush=True)
 
     max_own = max([gridL.value, gridR.value, gridU.value, gridD.value])
-    print('max own: ' + str(max_own), file=sys.stderr, flush=True)
+    print('max value: ' + str(max_own), file=sys.stderr, flush=True)
     if max_own == gridL.value:
         return 'LEFT'
     elif max_own == gridR.value:
@@ -312,8 +312,7 @@ while True:
         gridL.calc_sum_closest_owner()
         print('L after sum closest owner: - %s s -' % (time.time() - start_time),
               file=sys.stderr, flush=True)
-        print(gridL.sum_closest_owner,
-              file=sys.stderr, flush=True)
+        # print(gridL.sum_closest_owner, file=sys.stderr, flush=True)
         gridL.calc_value()
 
     if grid.get_item(x_user + 1, y_user).get_owner() == 9:
@@ -333,8 +332,7 @@ while True:
         gridR.calc_sum_closest_owner()
         print('R after sum closest owner: - %s s -' % (time.time() - start_time),
               file=sys.stderr, flush=True)
-        print(gridR.sum_closest_owner,
-              file=sys.stderr, flush=True)
+        # print(gridR.sum_closest_owner, file=sys.stderr, flush=True)
         gridR.calc_value()
 
     if grid.get_item(x_user, y_user - 1).get_owner() == 9:
@@ -354,8 +352,7 @@ while True:
         gridU.calc_sum_closest_owner()
         print('U after sum closest owner: - %s s -' % (time.time() - start_time),
               file=sys.stderr, flush=True)
-        print(gridU.sum_closest_owner,
-              file=sys.stderr, flush=True)
+        # print(gridU.sum_closest_owner, file=sys.stderr, flush=True)
         gridU.calc_value()
 
     if grid.get_item(x_user, y_user + 1).get_owner() == 9:
@@ -375,8 +372,7 @@ while True:
         gridD.calc_sum_closest_owner()
         print('D after sum closest owner: - %s s -' % (time.time() - start_time),
               file=sys.stderr, flush=True)
-        print(gridD.sum_closest_owner,
-              file=sys.stderr, flush=True)
+        # print(gridD.sum_closest_owner, file=sys.stderr, flush=True)
         gridD.calc_value()
 
     # set first to false
